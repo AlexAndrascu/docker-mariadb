@@ -10,8 +10,8 @@ RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-#change bind address to 0.0.0.0
-RUN sed -i -r 's/bind-address.*$/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
+# Configure MariaDB to listen on any address.
+RUN sed -i -e 's/^bind-address/#bind-address/' /etc/mysql/my.cnf
 
 # Change the innodb-buffer-pool-size to 128M (default is 256M).
 # This should make it friendlier to run on low memory servers.
