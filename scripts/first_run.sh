@@ -12,6 +12,7 @@ pre_start_action() {
       echo "Initializing MariaDB at $DATA_DIR"
       # Copy the data that we generated within the container to the empty DATA_DIR.
       #cp -R /var/lib/mysql/* $DATA_DIR
+      mysql_install_db
   fi
 
   # Ensure mysql owns the DATA_DIR
@@ -31,10 +32,8 @@ post_start_action() {
   mysql -u root <<-EOF
       DELETE FROM mysql.user WHERE user = '$USER';
       FLUSH PRIVILEGES;
-      CREATE USER '$USER'@'localhost' IDENTIFIED BY '$PASS';
-      GRANT ALL PRIVILEGES ON *.* TO '$USER'@'localhost' WITH GRANT OPTION;
-      CREATE USER '$USER'@'%' IDENTIFIED BY '$PASS';
-      GRANT ALL PRIVILEGES ON *.* TO '$USER'@'%' WITH GRANT OPTION;
+      GRANT ALL ON *.* TO '$USER'@'%' IDENTIFIED BY '$PASS' WITH GRANT OPTION; 
+      FLUSH PRIVILEGES;
 EOF
 
   rm /firstrun
